@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style type="text/css">
+input{
+	width: 50px;
+}
+</style>
+<script type="text/javascript">
+function myclick(){
+	
+	var obj_mine = document.querySelector('#it_mine');
+	
+	var num = Math.random();
+	
+	var com = "";
+	if(num > 0.5){
+		com += "홀";
+	}else{
+		com += "짝";
+	}
+	
+	var obj_com = document.querySelector('#it_com');
+	obj_com.value = com
+	
+	var result = "";
+// 	if(obj_mine == com){
+// 		result = "승리";
+// 	}else{
+// 		result = "패배";
+// 	}
+	result = obj_mine == com ? "승리" : "패배"
+	
+	
+	obj_result = document.querySelector('#it_result');
+	obj_result.value = result;
+	
+	
+}
+</script>
+</head>
+<body>
+
+<table border="1">
+	<tr>
+		<td>나:</td>
+		<td><input type="text" id="it_mine"></td>
+	</tr>
+	<tr>
+		<td>컴:</td>
+		<td><input type="text" id="it_com"></td>
+	</tr>
+	<tr>
+		<td>결과:</td>
+		<td><input type="text" id="it_result"></td>
+	</tr>
+	<tr>
+		<td colspan="2"><input type="button" value="게임하기" onclick="myclick()"></td>
+	</tr>
+</table>
+</body>
+</html>

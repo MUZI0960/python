@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript">
+function fn_del(){
+	document.frm.submit();
+}
+function fn_mod(){
+	location.href = "mem_mod?m_id="+m_id;
+}
+</script>
+</head>
+<body>
+MEM_DETAIL
+<form name="frm" action="mem_del_act" method="post">
+<input type="hidden" name="m_id" value="{{mem.m_id}}" />
+</form>
+<table border="1">
+	<tr>
+		<td>사번</td>
+		<td>{{mem.m_id}}</td>
+	</tr>	
+	<tr>
+		<td>이름</td>
+		<td>{{mem.m_name}}</td>
+	</tr>
+	<tr>
+		<td>전화번호</td>
+		<td>{{mem.tel}}</td>
+	</tr>
+	<tr>
+		<td>이메일</td>
+		<td>{{mem.email}}</td>
+	</tr>
+	<tr>
+		<td colspan="1">
+			<input onclick="location.href='mem_mod?m_id={{mem.m_id}}'" type="button" value="수정">
+		</td>
+		<td>
+			<input onclick="fn_del()" type="submit" value="삭제">
+		</td>
+	</tr>
+</table>
+
+</body>
+</html>

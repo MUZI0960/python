@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+#mycan{
+	width: 300px;
+	height: 500px;
+}
+</style>
+<script type="text/javascript">
+
+class Gong{
+   constructor(x,y,r){
+      this.x = x;
+      this.y = y;
+      this.r = r;
+      this.dx = 1;
+      this.dy = -1;
+      
+   }
+}
+class Pan{
+   constructor(x,y,hw,hh){
+      this.x = x;
+      this.y = y;
+      this.hw = hw;
+      this.hh = hh;
+   }
+}
+class Dol{
+   constructor(x,y,hw,hh){
+      this.x = x;
+      this.y = y;
+      this.hw = hw;
+      this.hh = hh;
+   }
+}
+var gong = new Gong(150,465,5);
+var dols = [];
+var pan = new Pan(150,480,40,10);
+
+function myrender(){
+   var canvas = document.getElementById('mycan');
+    var ctx = canvas.getContext("2d");
+    
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    ctx.beginPath();
+    ctx.arc(gong.x, gong.y, gong.r, 0, 2*Math.PI);
+//     ctx.stroke();
+    ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
+    ctx.fill();
+    
+//     ctx.fillStyle = "#0000ff";
+    ctx.fillStyle = "rgba(0, 0, 255, 0.5)";
+	ctx.fillRect(pan.x-pan.hw, pan.y-pan.hh, pan.hw*2, pan.hh*2);
+
+	for(var i = 0; i<dols.length; i++){
+		ctx.fillStyle = "rgba(0, 255, 255, 0.5)";
+		ctx.fillRect(dols[i].x-dols[i].hw, dols[i].y-dols[i].hh, dols[i].hw*2, dols[i].hh*2);
+	}
+	
+}
+
+
+function myinit(){
+	
+	for(var i = 1; i<=5; i++){
+		for(var j = 1; j<=8; j++){
+			dols.push(new Dol(45+30*j,60+30*i,14,14));
+		}
+	}
+   
+      console.log(gong);
+      console.log(dols);
+      console.log(pan);
+      myrender();
+	
+      myloop();
+}
+var cnt = 0;
+
+function myloop(){
+// 	console.log("cnt", cnt++);
+	
+	gong.x += gong.dx;
+	gong.y += gong.dy;
+	
+	if(gong.y>500){
+		alert("GAME OVER");
+		return;
+	}
+	
+	if(gong.x>300){
+		gong.dx *= -1;
+	}
+	else if(gong.x<0){
+		gong.dx *= -1;	
+	}
+	else if(gong.y<0){
+		gong.dy *= -1;	
+	}
+	
+	var d = dols[0];
+	var g = gong;
+	var p = pan;
+	
+	//PAN과 충돌
+	if(p.x-p.hw < g.x && g.x < p.x + p.hw){
+		if(p.y-p.hh < g.y && g.y < p.y+p.hh){
+// 			console.log("충돌", cnt++, g.x, g.y);
+			
+			var face = -1;			
+			var orix = g.x - d.x;
+			var oriy = g.y - d.y;
+			var ratio = Math.abs( orix / oriy );
+			
+			if(orix>0){
+				if(ratio>4){
+					face = 1;
+				}else{
+				if(oriy>0){
+					face= 2;
+				}else{
+					face =4;
+				}
+			}		
+			}else{
+				if(ratio>4){
+					face = 3;
+				}else{
+					if(oriy>0){
+						face=2;
+					}else{
+						face=4;
+					}
+				}
+			}
+			
+			if(face==1){
+				gong.dx *= -1;	
+			}
+			if(face==2){
+				gong.dy *= -1;	
+			}
+			if(face==3){
+				gong.dx *= -1;	
+			}
+			if(face==4){
+				gong.dy *= -1;	
+			}
+			
+			if(orix > 40){
+				gong.dx = 1;
+			}else if(orix>30){
+				gong.dx = 0.75;
+			}else if(orix>20){
+				gong.dx = 0.5;
+			}else if(orix>10){
+				gong.dx = 0.25;
+			}else if(orix>5){
+				gong.dx = 0;
+			}else if(orix>-0.5){
+				gong.dx = -2.5;
+			}else if(orix>-10){
+				gong.dx = -0.5;
+			}else if(orix>-20){
+				gong.dx = -0.75;
+			}else{
+				gong.dx = -1;
+			}
+			
+			console.log("충돌pan", cnt++, g.x, g.y, orix, oriy, face);
+		} 
+	}
+	
+	//DOL과 충돌
+	for(var i = 0; i<dols.length; i++){
+				var d = dols[i];
+	if(d.x-d.hw < g.x && g.x < d.x + d.hw){
+		if(d.y-d.hh < g.y && g.y < d.y+d.hh){
+// 			console.log("충돌", cnt++, g.x, g.y);
+			var face = -1;			
+			var orix = g.x - d.x;
+			var oriy = g.y - d.y;
+			var ratio = Math.abs( orix / oriy );
+			
+			if(orix>0){
+				if(ratio>1){
+					face = 1;
+				}else{
+				if(oriy>0){
+					face= 2;
+				}else{
+					face =4;
+				}
+			}		
+			}else{
+				if(ratio>1){
+					face = 3;
+				}else{
+					if(oriy>0){
+						face=2;
+					}else{
+						face=4;
+					}
+				}
+			}
+			if(face==1){
+				gong.dx *= -1;	
+			}
+			if(face==2){
+				gong.dy *= -1;	
+			}
+			if(face==3){
+				gong.dx *= -1;	
+			}
+			if(face==4){
+				gong.dy *= -1;	
+			}
+			
+			console.log("충돌", cnt++, g.x, g.y, orix, oriy, face);
+			dols.splice(i, 1);
+			
+			if(dols.length<=0){
+				alert("YOU WIN");
+				return;
+			}
+			break;
+		} 
+	}
+	}
+	
+	
+	
+	myrender();
+	setTimeout(myloop, 1000/120);
+}
+window.addEventListener("keydown", (e) => 
+// 	console.log(e.key);
+	{
+	if(e.key=="ArrowRight"){
+		if(pan.x<270){
+			pan.x+=5;
+		}
+		
+	}else if(e.key=="ArrowLeft")
+		if(pan.x>30){
+			pan.x-=5;
+		}
+	});
+
+
+
+</script>
+</head>
+<body onload="myinit()">
+<canvas id="mycan" width="300px" height="500px">
+
+</canvas>
+</body>
+</html>

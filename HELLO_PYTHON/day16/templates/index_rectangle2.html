@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+#mycan{
+	width: 500px;
+/* 	height: 400px; */
+}
+</style>
+<script type="text/javascript">
+function myinit(){
+	console.log("myinit");
+	
+	var canvas = document.querySelector('#mycan');
+	
+	var ctx = canvas.getContext('2d');
+	
+	ctx.fillStyle = "#A0522D";
+	ctx.fillRect(0, 0, 20, 20);
+	
+}
+</script>
+</head>
+<body onload="myinit()">
+<canvas id="mycan">
+</canvas>
+</body>
+</html>

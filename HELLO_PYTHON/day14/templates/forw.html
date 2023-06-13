@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+Dispatch Forward<br/>
+{{a}}<br/>
+
+{%
+for i in arr
+%}
+<p>{{i}}</p>
+{% endfor %}
+
+<table border="1">
+	
+	<tr>
+		<td>사번</td>
+		<td>이름</td>
+		<td>성별</td>
+		<td>주소</td>
+	</tr>
+	{% for item in mylist %}
+		<td>{{item["e_id"]}}</td>
+		<td>{{item["e_name"]}}</td>
+		<td>{{item["sex"]}}</td>
+		<td>{{item["addr"]}}</td>
+	</tr>
+	{% endfor %}
+</table>
+
+</body>
+</html>

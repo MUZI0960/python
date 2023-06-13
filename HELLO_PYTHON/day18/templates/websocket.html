@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Chat</title>
+        <script type="text/javascript">
+            var client_id = Date.now()
+            var ws = new WebSocket(`ws://192.168.36.52:8000/ws/${client_id}`);
+            ws.onmessage = function(event) {
+                console.log(event.data);
+            };
+            function mysend() {
+                ws.send("babo");
+            }
+        </script>
+    </head>
+    <body>
+		<a href="javascript:mysend()">전송</a>
+    </body>
+</html>

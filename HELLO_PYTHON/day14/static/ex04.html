@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style type="text/css">
+input{
+	width: 40px;
+}
+</style>
+<script type="text/javascript">
+function myclick(){
+	var obj1 = document.querySelector('#it1');
+	var n1 = obj1.value;
+	var num1 = parseInt(n1);
+	
+	var obj2 = document.querySelector('#it2');
+	var n2 = obj2.value;
+	var num2 = parseInt(n2);
+	
+	var result = num1+num2;
+	
+	var obj3 = document.querySelector('#it3');
+	obj3.value = result
+	
+}
+</script>
+</head>
+<body>
+EX03
+<input type="text" id="it1" />
++
+<input type="text" id="it2" />
+<a href="javascript:myclick()">=</a>
+<input type="text" id="it3" />
+</body>
+</html>

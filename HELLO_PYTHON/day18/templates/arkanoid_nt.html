@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style type="text/css">
+#mycan{
+	width: 300px;
+	height: 500px;
+}
+.user_name{
+	width: 50px;
+	height: 4px;
+}
+.user_state{
+	width: 50px;
+	height: 30px;
+}
+#my_name{
+	width: 50px;
+}
+</style>
+<script type="text/javascript">
+var client_id = Date.now();
+
+console.log("location.ip",location.hostname);
+
+var ws = new WebSocket(`ws://${location.hostname}:8000/ws/${client_id}`);
+ws.onmessage = function(event) {
+	var msg = event.data;
+	var arr = msg.split(":");
+	var cmd = arr[0];
+    console.log(msg);
+	if(cmd=="ready"){
+		rv_ready(arr[1]);
+	}
+	if(cmd=="start"){
+		rv_start(arr[1]);
+	}
+	if(cmd=="status"){
+		rv_status(arr[1],arr[2]);
+	}
+	if(cmd=="win"){
+		rv_win(arr[1]);
+	}
+	if(cmd=="dead"){
+		rv_dead(arr[1]);
+	}
+};
+
+function rv_status(user_name,cnt_remain) {
+	var idx = findIdx(user_name);
+	var div_state_s = document.querySelectorAll(".user_state");
+	div_state_s[idx].innerHTML = cnt_remain;
+}
+
+function rv_win(user_name) {
+	alert(user_name + "가 이겼습니다.");
+}
+function rv_dead(user_name) {
+	var idx = findIdx(user_name);
+	var div_state_s = document.querySelectorAll(".user_state");
+	div_state_s[idx].style.backgroundColor = 'red';
+}
+function rv_start(user_name) {
+	myloop();
+}
+
+var users = [];
+function rv_ready(user_name) {
+	var idx = findIdx(user_name);
+	if(idx == -1){
+		users.push(user_name);
+	}
+    var div_users = document.querySelectorAll(".user_name");
+    for(var i=0;i<users.length;i++){
+    	div_users[i].innerHTML = users[i];
+    }
+
+}
+
+function findIdx(user_name){
+	for(var i=0;i<users.length;i++){
+		if(user_name==users[i]){
+			return i;
+		}
+	}
+	return -1;
+}
+
+
+function mysend() {
+    ws.send("babo");
+}
+
+class Gong{
+	constructor(x,y,r) {
+		this.x = x;
+		this.y = y;
+		this.r = r;
+		this.dx = 1;
+		this.dy = -1.2;
+	}
+}
+
+class Dol{
+	constructor(x,y,hw,hh) {
+		this.x = x;
+		this.y = y;
+		this.hw = hw;
+		this.hh = hh;
+	}
+}
+
+class Pan{
+	constructor(x,y,hw,hh) {
+		this.x = x;
+		this.y = y;
+		this.hw = hw;
+		this.hh = hh;
+	}
+}
+var gong = new Gong(150,465,5);
+var dols = [];
+var pan = new Pan(150,480,40,10);
+
+function myrender(){
+	var c = document.getElementById("mycan");
+	var ctx = c.getContext("2d");
+	
+	ctx.clearRect(0, 0, c.width, c.height);
+	
+	ctx.fillStyle = "rgba(240, 240, 240, 0.5)";
+	ctx.fillRect(0, 0, c.width, c.height);
+	
+	ctx.beginPath();
+	ctx.arc(gong.x, gong.y, gong.r, 0,  Math.PI*2);
+	ctx.fillStyle = "rgba(255, 0, 0, 1)";
+	//ctx.stroke();
+	ctx.fill();
+	
+	ctx.fillStyle = "rgba(0, 0, 255, 1)";
+	ctx.fillRect(pan.x-pan.hw, pan.y-pan.hh, pan.hw*2, pan.hh*2);
+	
+
+	ctx.fillStyle = "rgba(0, 255, 255, 1)";
+	for(var i=0;i<dols.length;i++){
+		ctx.fillRect(dols[i].x-dols[i].hw, dols[i].y-dols[i].hh, dols[i].hw*2, dols[i].hh*2);		
+	}
+
+	
+	
+}
+
+function myinit(){
+	
+	for(var i=0;i<5;i++){
+		for(var j=0;j<8;j++){
+			dols.push(new Dol(45+30*j,60+30*i,14,14));
+		}
+	}
+	
+// 	dols.push(new Dol(150,150,50,50));
+	
+	console.log(gong);
+	console.log(dols);
+	console.log(pan);
+	myrender();
+	
+// 	myloop();
+}
+
+var cnt = 0;
+function myloop(){
+// 	console.log("cnt",cnt++);
+	
+	
+	gong.x += gong.dx;
+	gong.y += gong.dy;
+	
+	if(gong.y>500){
+		alert("GAME OVER");
+		return;
+	}
+	
+	if(gong.x>300){
+		gong.dx *= -1;
+	}
+	if(gong.x<0){
+		gong.dx *= -1;
+	}
+	if(gong.y<0){
+		gong.dy *= -1;
+	}
+	
+	
+	var g = gong;
+	var p = pan;
+	
+	//PAN과충돌
+	if(p.x-p.hw<g.x&&g.x<p.x+p.hw){
+		if(p.y-p.hh<g.y&&g.y<p.y+p.hh){
+			
+			var face = -1;
+			var orix = g.x - p.x;
+			var oriy = g.y - p.y;
+			var ratio = Math.abs(orix / oriy);
+			
+			if(orix>0){
+				if(ratio>4){
+					face = 1;
+				}else{
+					if(oriy>0){
+						face=2;
+					}else{
+						face=4;
+					}
+				}
+			}else{
+				if(ratio>4){
+					face = 3;
+				}else{
+					if(oriy>0){
+						face=2;
+					}else{
+						face=4;
+					}
+				}
+			}
+			
+			if(face==1){
+				gong.dx *= -1;
+			}
+			if(face==2){
+				gong.dy *= -1;
+			}
+			if(face==3){
+				gong.dx *= -1;
+			}
+			if(face==4){
+				gong.dy *= -1;
+			}
+			
+			if(orix >40){
+				gong.dx = 1;
+			}else if(orix >30){
+				gong.dx = 0.75;
+			}else if(orix >20){
+				gong.dx = 0.5;
+			}else if(orix >10){
+				gong.dx = 0.25;
+			}else if(orix >5){
+				gong.dx = 0;
+			}else if(orix >-5){
+				gong.dx = -0.25;
+			}else if(orix >-10){
+				gong.dx = -0.5;
+			}else if(orix >-20){
+				gong.dx = -0.75;
+			}else{
+				gong.dx = -1;
+			}
+			
+			
+
+			console.log("충돌[PAN]",cnt++,g.x,g.y,orix,oriy,face);
+			//return;
+			
+		}
+	}	
+	
+	//DOL과충돌
+	
+	for(var i=0;i<dols.length;i++){
+		var d = dols[i];
+		if(d.x-d.hw<g.x&&g.x<d.x+d.hw){
+			if(d.y-d.hh<g.y&&g.y<d.y+d.hh){
+				
+				var face = -1;
+				var orix = g.x - d.x;
+				var oriy = g.y - d.y;
+				var ratio = Math.abs(orix / oriy);
+				
+				if(orix>0){
+					if(ratio>1){
+						face = 1;
+					}else{
+						if(oriy>0){
+							face=2;
+						}else{
+							face=4;
+						}
+					}
+				}else{
+					if(ratio>1){
+						face = 3;
+					}else{
+						if(oriy>0){
+							face=2;
+						}else{
+							face=4;
+						}
+					}
+				}
+				
+				if(face==1){
+					gong.dx *= -1;
+				}
+				if(face==2){
+					gong.dy *= -1;
+				}
+				if(face==3){
+					gong.dx *= -1;
+				}
+				if(face==4){
+					gong.dy *= -1;
+				}
+
+				
+				console.log("충돌",cnt++,g.x,g.y,orix,oriy,face);
+				dols.splice(i, 1);
+				
+				var obj = document.querySelector("#my_name");
+				ws.send("status:"+obj.value+":"+dols.length);
+				
+				if(dols.length<=0){
+					ws.send("win:"+obj.value);
+					alert("youwin");
+					return;
+				}
+				
+				break;
+				
+			}
+		}
+		
+	}
+	
+
+	
+	
+	
+	
+	myrender();
+	setTimeout(myloop, 1000/120);
+}
+
+window.addEventListener("keydown", (e) => {
+	
+	if(e.key=="ArrowRight"){
+		if(pan.x<270){
+			pan.x+=5;
+		}
+	}
+	if(e.key=="ArrowLeft"){
+		if(pan.x>30){
+			pan.x-=5;
+		}
+	}	
+});
+
+function fn_ready(){
+	var obj = document.querySelector("#my_name");
+	ws.send("ready:"+obj.value);
+}
+function fn_start(){
+	var obj = document.querySelector("#my_name");
+	ws.send("start:"+obj.value);
+}
+
+</script>
+
+</head>
+<body onload="myinit()">
+
+나:<input type="text" id="my_name" />
+<input type="button" value="READY" onclick="fn_ready()" />
+<input type="button" value="START" onclick="fn_start()" />
+<table border="1px">
+	<tr>
+		<td rowspan="8">
+			<canvas id="mycan" width="300px" height="500px" ></canvas>
+		</td>
+		<td><div class="user_name"></div></td>
+		<td><div class="user_name"></div></td>
+		<td><div class="user_name"></div></td>
+		<td><div class="user_name"></div></td>
+		<td><div class="user_name"></div></td>
+		<td><div class="user_name"></div></td>
+	</tr>
+	<tr>
+		<td><div class="user_state"></div></td>
+		<td><div class="user_state"></div></td>
+		<td><div class="user_state"></div></td>
+		<td><div class="user_state"></div></td>
+		<td><div class="user_state"></div></td>
+		<td><div class="user_state"></div></td>
+	</tr>
+	<tr>
+		<td><div class="user_name"></div></td>
+		<td><div class="user_name"></div></td>
+		<td><div class="user_name"></div></td>
+		<td><div class="user_name"></div></td>
+		<td><div class="user_name"></div></td>
+		<td><div class="user_name"></div></td>
+	</tr>
+	<tr>
+		<td><div class="user_state"></div></td>
+		<td><div class="user_state"></div></td>
+		<td><div class="user_state"></div></td>
+		<td><div class="user_state"></div></td>
+		<td><div class="user_state"></div></td>
+		<td><div class="user_state"></div></td>
+	</tr>
+	<tr>
+		<td><div class="user_name"></div></td>
+		<td><div class="user_name"></div></td>
+		<td><div class="user_name"></div></td>
+		<td><div class="user_name"></div></td>
+		<td><div class="user_name"></div></td>
+		<td><div class="user_name"></div></td>
+	</tr>
+	<tr>
+		<td><div class="user_state"></div></td>
+		<td><div class="user_state"></div></td>
+		<td><div class="user_state"></div></td>
+		<td><div class="user_state"></div></td>
+		<td><div class="user_state"></div></td>
+		<td><div class="user_state"></div></td>
+	</tr>
+	<tr>
+		<td><div class="user_name"></div></td>
+		<td><div class="user_name"></div></td>
+		<td><div class="user_name"></div></td>
+		<td><div class="user_name"></div></td>
+		<td><div class="user_name"></div></td>
+		<td><div class="user_name"></div></td>
+	</tr>
+	<tr>
+		<td><div class="user_state"></div></td>
+		<td><div class="user_state"></div></td>
+		<td><div class="user_state"></div></td>
+		<td><div class="user_state"></div></td>
+		<td><div class="user_state"></div></td>
+		<td><div class="user_state"></div></td>
+	</tr>
+	
+
+
+</table>
+
+
+
+
+<a href="javascript:mysend()">전송</a>
+</body>
+</html>
+
+
+

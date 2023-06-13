@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="static/jquery-3.6.4.js"></script>
+<script type="text/javascript">
+function fn_list(){
+   
+   var params = JSON.stringify({
+      'e_id' :'1',   
+      'e_name' :'1',   
+      'sex' :'1',   
+      'addr' :'1'   
+   });
+
+   $.ajax({
+             url: "myajax_selects",
+             type: "post",
+             data: params,
+            dataType: "json",
+            contentType:"application/json",
+             success: function(data) {
+				var emps = data;
+				var str = "";
+				for(var i = 0; i<emps.length; i++){
+					var e_id = emps[i].e_id;
+					var e_name = emps[i].e_name;
+					var sex = emps[i].sex;
+					var addr = emps[i].addr;
+					console.log(e_id,e_name,sex,addr);
+					str += "<tr><td><a href='javascript:fn_one("+ e_id +")'>"+ e_id +"</a></td>";
+					str += "<td>"+ e_name +"</td>";
+					str += "<td>"+ sex +"</td>";
+					str += "<td>"+ addr +"</td></tr>";
+				}
+				$("#my_tbody").html(str);
+       }
+    });
+}
+
+$(document).ready(function(){
+	fn_list();
+});
+
+function fn_one(e_id){
+	console.log(e_id);
+	var params = JSON.stringify({
+	      'e_id' : e_id
+	   });
+
+	   $.ajax({
+	             url: "myajax_select",
+	             type: "post",
+	             data: params,
+	            dataType: "json",
+	            contentType:"application/json",
+	             success: function(data) {
+	            	 console.log(data)
+	            	 $("#e_id").val(e_id);
+	            	 $("#e_name").val(data.e_name);
+	            	 $("#sex").val(data.sex);
+	            	 $("#addr").val(data.addr);
+	       }
+	    });
+}
+
+function fn_insert(){
+	
+	var params = JSON.stringify({
+	      'e_id' :  $("#e_id").val(),
+	      'e_name' :  $("#e_name").val(),
+	      'sex' :  $("#sex").val(),
+	      'addr' :  $("#addr").val(),
+	   });
+	
+	 $.ajax({
+         url: "myajax_insert",
+         type: "post",
+         data: params,
+        dataType: "json",
+        contentType:"application/json",
+         success: function(data) {
+        	if(data == 1){
+	        	 alert("데이터 입력 성공");
+	        	 fn_list();
+	        	 $("#e_id").val("");
+	        	 $("#e_name").val("");
+	        	 $("#sex").val("");
+	        	 $("#addr").val("");
+        	}else{
+        		 alert("데이터 입력 실패");
+        	}
+        	 
+   }
+});
+}
+function fn_update(){
+	var params = JSON.stringify({
+	      'e_id' :  $("#e_id").val(),
+	      'e_name' :  $("#e_name").val(),
+	      'sex' :  $("#sex").val(),
+	      'addr' :  $("#addr").val(),
+	   });
+	
+	$.ajax({
+        url: "myajax_update",
+        type: "post",
+        data: params,
+       dataType: "json",
+       contentType:"application/json",
+        success: function(data) {
+        	if(data == 1){
+	        	 alert("데이터 수정 성공");
+	        	 fn_list();
+	        	 $("#e_id").val("");
+	        	 $("#e_name").val("");
+	        	 $("#sex").val("");
+	        	 $("#addr").val("");
+       	}else{
+       		 alert("데이터 수정 실패");
+       	}
+  }
+});
+}
+
+function fn_delete(){
+	var params = JSON.stringify({
+	      'e_id' : $("#e_id").val()
+	   });
+	
+	 $.ajax({
+         url: "myajax_delete",
+         type: "post",
+         data: params,
+        dataType: "json",
+        contentType:"application/json",
+         success: function(data) {
+        	 if(data == 1){
+	        	 alert("데이터 삭제 성공");
+	        	 fn_list();
+	        	 $("#e_id").val("");
+	        	 $("#e_name").val("");
+	        	 $("#sex").val("");
+	        	 $("#addr").val("");
+       	}else{
+       		 alert("데이터 삭제 실패");
+       	}
+   }
+});
+	
+	
+} 
+</script>
+</head>
+<body>
+
+<table border="1">
+	<thead>
+	<tr>
+		<td>사번</td>
+		<td>이름</td>
+		<td>성별</td>
+		<td>주소</td>
+	</tr>
+	</thead>
+	<tbody id="my_tbody">
+	<tr>
+		<td id="td_noData" colspan="4">검색된 데이터가 없습니다.</td>
+	</tr>
+	</tbody>
+</table>
+
+<table border="1">
+	<tr>
+		<td>사번</td>
+		<td>
+			<input type="text" id="e_id">
+		</td>
+	</tr>
+	<tr>
+		<td>이름</td>
+		<td>
+			<input type="text" id="e_name">
+		</td>
+	</tr>
+	<tr>
+		<td>성별</td>
+		<td>
+			<input type="text" id="sex">
+		</td>
+	</tr>
+	<tr>
+		<td>주소
+		<td>
+			<input type="text" id="addr">
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<input type="button" value="추가" onclick="javascript:fn_insert()">
+			<input type="button" value="삭제" onclick="javascript:fn_delete()" >
+			<input type="button" value="수정" onclick="javascript:fn_update()">
+		</td>
+	</tr>
+</table>
+
+<a href ="javascript:fn_list()">ajax</a>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style type="text/css">
+input{
+	width: 50px;
+}
+</style>
+<script src="jquery-3.6.4.js"></script>
+<script type="text/javascript">
+function myclick(){
+	
+	var obj_mine = $('#it_mine').val();
+	
+	var num = Math.random();
+	
+// 	var com = "";
+	if(num > 0.5){
+		var com = "홀";
+	}else{
+		var com = "짝";
+	}
+	
+	$('#it_com').val(com);
+	
+	var result = "";
+	
+	result = obj_mine == com ? "승리" : "패배";
+	
+	
+	obj_result = $('#it_result');
+	obj_result.val(result);
+	
+	
+}
+</script>
+</head>
+<body>
+
+<table border="1">
+	<tr>
+		<td>나:</td>
+		<td><input type="text" id="it_mine"></td>
+	</tr>
+	<tr>
+		<td>컴:</td>
+		<td><input type="text" id="it_com"></td>
+	</tr>
+	<tr>
+		<td>결과:</td>
+		<td><input type="text" id="it_result"></td>
+	</tr>
+	<tr>
+		<td colspan="2"><input type="button" value="게임하기" onclick="myclick()"></td>
+	</tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript">
+</script>
+</head>
+<body>
+MEM_MOD
+<form action="mem_mod_act" method="post">
+<table border="1">
+	<tr>
+		<td>사번</td>
+		<td><input type="text" name="m_id" value="{{list.m_id}}"></td>
+	</tr>	
+	<tr>
+		<td>이름</td>
+		<td><input type="text"name="m_name" value="{{list.m_name}}"></td>
+	</tr>
+	<tr>
+		<td>성별</td>
+		<td><input type="text" name="tel" value="{{list.tel}}"></td>
+	</tr>
+	<tr>
+		<td>주소</td>
+		<td><input type="text" name="email" value="{{list.email}}"></td>
+	</tr>
+	
+	<tr>
+		<td>
+			<input type="submit" value="저장">
+		</td>
+	</tr>
+</table>
+</form>
+</body>
+</html>

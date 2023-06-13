@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript">
+function fn_del(){
+	document.frm.submit();
+}
+</script>
+</head>
+<body>
+EMP_DETAIL
+<form name="frm" action="emp_del_act" method="post">
+<input type="hidden" name="e_id" value="{{list.e_id}}" />
+</form>
+<table border="1">
+	<tr>
+		<td>사번</td>
+		<td>{{list.e_id}}</td>
+	</tr>	
+	<tr>
+		<td>이름</td>
+		<td>{{list.e_name}}</td>
+	</tr>
+	<tr>
+		<td>성별</td>
+		<td>{{list.sex}}</td>
+	</tr>
+	<tr>
+		<td>주소</td>
+		<td>{{list.addr}}</td>
+	</tr>
+	<tr>
+		<td colspan="1">
+			<input onclick="location.href='emp_mod?e_id={{list.e_id}}'" type="button" value="수정">
+		</td>
+		<td>
+			<input type="submit" value="삭제">
+		</td>
+	</tr>
+</table>
+
+</body>
+</html>
